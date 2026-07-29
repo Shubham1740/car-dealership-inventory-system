@@ -44,3 +44,11 @@ suggest the fields for vehicles
 
 Outcome:
 implemented the vehicle model
+
+## Prompt 7
+
+Prompt:
+suggest testcses for vehicles endpoint
+
+Outcome:
+implemented testcases for vehicle endpoint
