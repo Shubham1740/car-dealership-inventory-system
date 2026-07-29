@@ -29,3 +29,10 @@ give boilerplate for register and login of users
 
 Outcome:
 Created register and login endpoints for users.
+## Prompt 5
+
+Prompt:
+Provide a clean boilerplate for middleware for jwt authentication
+
+Outcome:
+Created middleware for authentication
