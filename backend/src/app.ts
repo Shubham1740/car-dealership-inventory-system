@@ -1,6 +1,8 @@
 import express from "express";
 import healthRoutes from './routes/health.routes';
 import authRoutes from './routes/auth.routes';
+import dotenv from 'dotenv';
+dotenv.config({ quiet: true });
 
 const app = express();
 

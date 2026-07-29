@@ -21,3 +21,11 @@ Can you suggest some other edge cases which may occur here?
 
 Outcome:
 Used the suggestions to add validation for users
+
+## Prompt 4
+
+Prompt:
+give boilerplate for register and login of users
+
+Outcome:
+Created register and login endpoints for users.
