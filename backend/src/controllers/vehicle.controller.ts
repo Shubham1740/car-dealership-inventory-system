@@ -1,6 +1,15 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
-import { createVehicle, getAllVehicles, searchVehicles, updateVehicle, deleteVehicle, VehicleNotFoundError } from '../services/vehicle.service';
+import {
+  createVehicle,
+  getAllVehicles,
+  searchVehicles,
+  updateVehicle,
+  deleteVehicle,
+  purchaseVehicle,
+  VehicleNotFoundError,
+  OutOfStockError,
+} from '../services/vehicle.service';
 
 export const create = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
@@ -103,6 +112,38 @@ export const remove = async (req: AuthenticatedRequest, res: Response): Promise<
     res.status(500).json({
       success: false,
       message: 'Failed to delete vehicle',
+    });
+  }
+};
+
+export const purchase = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const vehicle = await purchaseVehicle(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      data: vehicle,
+    });
+  } catch (error) {
+    if (error instanceof VehicleNotFoundError) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
+    if (error instanceof OutOfStockError) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to purchase vehicle',
     });
   }
 };

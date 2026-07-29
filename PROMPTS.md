@@ -76,3 +76,11 @@ suggest some edge cases for the vehicle delete endpoint
 
 outcome:
 implement test cases for delete endpoint
+
+## Prompt 11
+
+Prompt:
+suggest test cases and fields for vehicle purchase
+
+Outcome:
+implemented test cases and purchase model

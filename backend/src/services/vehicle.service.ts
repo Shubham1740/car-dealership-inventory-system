@@ -104,3 +104,27 @@ export const deleteVehicle = async (id: string): Promise<void> => {
     throw new VehicleNotFoundError();
   }
 };
+
+export class OutOfStockError extends Error {
+  constructor() {
+    super('Vehicle is out of stock');
+    this.name = 'OutOfStockError';
+  }
+}
+
+export const purchaseVehicle = async (id: string): Promise<SafeVehicle> => {
+  const vehicle = await Vehicle.findById(id);
+
+  if (!vehicle) {
+    throw new VehicleNotFoundError();
+  }
+
+  if (vehicle.quantity <= 0) {
+    throw new OutOfStockError();
+  }
+
+  vehicle.quantity -= 1;
+  await vehicle.save();
+
+  return toSafeVehicle(vehicle);
+};
