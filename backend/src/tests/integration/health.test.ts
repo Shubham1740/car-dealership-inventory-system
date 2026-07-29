@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../app";
+import app from "../../app";
 
 describe("GET /api/health", () => {
   it("should return API status", async () => {
