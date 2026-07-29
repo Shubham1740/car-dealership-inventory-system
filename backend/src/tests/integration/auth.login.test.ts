@@ -21,21 +21,34 @@ afterEach(async () => {
 });
 
 describe('POST /api/auth/login', () => {
-  it('should log in an existing user and return a JWT token', async () => {
-    await User.create({
-      email: 'driver@example.com',
-      password: 'password123',
-    });
+  it('should return 401 for a wrong password', async () => {
+    await User.create({ email: 'driver@example.com', password: 'password123' });
 
     const response = await request(app).post('/api/auth/login').send({
       email: 'driver@example.com',
+      password: 'wrongpassword',
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+  });
+
+  it('should return 401 for an unknown email', async () => {
+    const response = await request(app).post('/api/auth/login').send({
+      email: 'nobody@example.com',
       password: 'password123',
     });
 
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(true);
-    expect(typeof response.body.data.token).toBe('string');
-    expect(response.body.data.user.email).toBe('driver@example.com');
-    expect(response.body.data.user.password).toBeUndefined();
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+  });
+
+  it('should return 400 when email or password is missing', async () => {
+    const response = await request(app).post('/api/auth/login').send({
+      email: 'driver@example.com',
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
   });
 });
