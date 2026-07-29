@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user.model';
+import { AppError } from '../utils/AppError';
 
 interface RegisterInput {
   email: string;
@@ -22,17 +23,15 @@ interface LoginResult {
   user: SafeUser;
 }
 
-export class DuplicateEmailError extends Error {
+export class DuplicateEmailError extends AppError {
   constructor() {
-    super('Email is already registered');
-    this.name = 'DuplicateEmailError';
+    super('Email is already registered', 409);
   }
 }
 
-export class InvalidCredentialsError extends Error {
+export class InvalidCredentialsError extends AppError {
   constructor() {
-    super('Invalid email or password');
-    this.name = 'InvalidCredentialsError';
+    super('Invalid email or password', 401);
   }
 }
 

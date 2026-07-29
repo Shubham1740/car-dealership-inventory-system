@@ -1,4 +1,5 @@
 import Vehicle, { IVehicle } from '../models/vehicle.model';
+import { AppError } from '../utils/AppError';
 
 interface CreateVehicleInput {
   make: string;
@@ -66,10 +67,10 @@ export const searchVehicles = async (filters: SearchFilters): Promise<SafeVehicl
   return vehicles.map(toSafeVehicle);
 };
 
-export class VehicleNotFoundError extends Error {
+export class VehicleNotFoundError extends AppError {
   constructor() {
-    super('Vehicle not found');
-    this.name = 'VehicleNotFoundError';
+    super('Vehicle not found', 404);
+    
   }
 }
 
@@ -105,10 +106,9 @@ export const deleteVehicle = async (id: string): Promise<void> => {
   }
 };
 
-export class OutOfStockError extends Error {
+export class OutOfStockError extends AppError {
   constructor() {
-    super('Vehicle is out of stock');
-    this.name = 'OutOfStockError';
+    super('Vehicle is out of stock', 400);
   }
 }
 
@@ -129,10 +129,9 @@ export const purchaseVehicle = async (id: string): Promise<SafeVehicle> => {
   return toSafeVehicle(vehicle);
 };
 
-export class InvalidQuantityError extends Error {
+export class InvalidQuantityError extends AppError {
   constructor() {
-    super('Restock quantity must be a positive number');
-    this.name = 'InvalidQuantityError';
+    super('Restock quantity must be a positive number', 400);
   }
 }
 

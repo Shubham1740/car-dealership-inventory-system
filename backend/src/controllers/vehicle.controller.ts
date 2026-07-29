@@ -12,172 +12,51 @@ import {
   OutOfStockError,
   InvalidQuantityError,
 } from '../services/vehicle.service';
+import { catchAsync } from '../utils/catchAsync';
 
-export const create = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    const { make, model, category, price, quantity } = req.body;
-    const vehicle = await createVehicle({ make, model, category, price, quantity });
+export const create = catchAsync(async (req, res) => {
+  const { make, model, category, price, quantity } = req.body;
+  const vehicle = await createVehicle({ make, model, category, price, quantity });
 
-    res.status(201).json({
-      success: true,
-      data: vehicle,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error instanceof Error ? error.message : 'Failed to create vehicle',
-    });
-  }
-};
+  res.status(201).json({ success: true, data: vehicle });
+});
 
-export const list = async (_req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    const vehicles = await getAllVehicles();
 
-    res.status(200).json({
-      success: true,
-      data: vehicles,
-    });
-  } catch {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch vehicles',
-    });
-  }
-};
+export const list = catchAsync(async (_req, res) => {
+  const vehicles = await getAllVehicles();
+  res.status(200).json({ success: true, data: vehicles });
+});
 
-export const search = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    const { make, model, category, minPrice, maxPrice } = req.query;
+export const search = catchAsync(async (req, res) => {
+  const { make, model, category, minPrice, maxPrice } = req.query;
 
-    const vehicles = await searchVehicles({
-      make: make as string | undefined,
-      model: model as string | undefined,
-      category: category as string | undefined,
-      minPrice: minPrice !== undefined ? Number(minPrice) : undefined,
-      maxPrice: maxPrice !== undefined ? Number(maxPrice) : undefined,
-    });
+  const vehicles = await searchVehicles({
+    make: make as string | undefined,
+    model: model as string | undefined,
+    category: category as string | undefined,
+    minPrice: minPrice !== undefined ? Number(minPrice) : undefined,
+    maxPrice: maxPrice !== undefined ? Number(maxPrice) : undefined,
+  });
 
-    res.status(200).json({
-      success: true,
-      data: vehicles,
-    });
-  } catch {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to search vehicles',
-    });
-  }
-};
+  res.status(200).json({ success: true, data: vehicles });
+});
 
-export const update = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    const vehicle = await updateVehicle(req.params.id, req.body);
+export const update = catchAsync(async (req, res) => {
+  const vehicle = await updateVehicle(req.params.id, req.body);
+  res.status(200).json({ success: true, data: vehicle });
+});
 
-    res.status(200).json({
-      success: true,
-      data: vehicle,
-    });
-  } catch (error) {
-    if (error instanceof VehicleNotFoundError) {
-      res.status(404).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
+export const remove = catchAsync(async (req, res) => {
+  await deleteVehicle(req.params.id);
+  res.status(200).json({ success: true, message: 'Vehicle deleted' });
+});
 
-    res.status(400).json({
-      success: false,
-      message: error instanceof Error ? error.message : 'Failed to update vehicle',
-    });
-  }
-};
+export const purchase = catchAsync(async (req, res) => {
+  const vehicle = await purchaseVehicle(req.params.id);
+  res.status(200).json({ success: true, data: vehicle });
+});
 
-export const remove = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    await deleteVehicle(req.params.id);
-
-    res.status(200).json({
-      success: true,
-      message: 'Vehicle deleted',
-    });
-  } catch (error) {
-    if (error instanceof VehicleNotFoundError) {
-      res.status(404).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
-
-    res.status(500).json({
-      success: false,
-      message: 'Failed to delete vehicle',
-    });
-  }
-};
-
-export const purchase = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    const vehicle = await purchaseVehicle(req.params.id);
-
-    res.status(200).json({
-      success: true,
-      data: vehicle,
-    });
-  } catch (error) {
-    if (error instanceof VehicleNotFoundError) {
-      res.status(404).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
-
-    if (error instanceof OutOfStockError) {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
-
-    res.status(500).json({
-      success: false,
-      message: 'Failed to purchase vehicle',
-    });
-  }
-};
-
-export const restock = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  try {
-    const vehicle = await restockVehicle(req.params.id, req.body.quantity);
-
-    res.status(200).json({
-      success: true,
-      data: vehicle,
-    });
-  } catch (error) {
-    if (error instanceof VehicleNotFoundError) {
-      res.status(404).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
-
-    if (error instanceof InvalidQuantityError) {
-      res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-      return;
-    }
-
-    res.status(500).json({
-      success: false,
-      message: 'Failed to restock vehicle',
-    });
-  }
-};
+export const restock = catchAsync(async (req, res) => {
+  const vehicle = await restockVehicle(req.params.id, req.body.quantity);
+  res.status(200).json({ success: true, data: vehicle });
+});
