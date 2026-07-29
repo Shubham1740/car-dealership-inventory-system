@@ -3,12 +3,14 @@ import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { useAuth } from '../hooks/useAuth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { setToken } = useAuth();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -16,7 +18,7 @@ const Login = () => {
 
         try {
             const response = await login({ email, password });
-            localStorage.setItem('token', response.data.token);
+            setToken(response.data.token);
             navigate('/dashboard');
         } catch (err: unknown) {
             setError(getErrorMessage(err));
