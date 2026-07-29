@@ -79,25 +79,26 @@ interface UpdateVehicleInput {
   model?: string;
   category?: string;
   price?: number;
-  quantity?: number;
 }
 
 export const updateVehicle = async (
   id: string,
   updates: UpdateVehicleInput
 ): Promise<SafeVehicle> => {
-  const vehicle = await Vehicle.findByIdAndUpdate(id, updates, {
+  const { make, model, category, price } = updates as UpdateVehicleInput & { quantity?: unknown };
+  const safeUpdates: UpdateVehicleInput = { make, model, category, price };
+ 
+  const vehicle = await Vehicle.findByIdAndUpdate(id, safeUpdates, {
     new: true,
     runValidators: true,
   });
-
+ 
   if (!vehicle) {
     throw new VehicleNotFoundError();
   }
-
+ 
   return toSafeVehicle(vehicle);
 };
-
 export const deleteVehicle = async (id: string): Promise<void> => {
   const vehicle = await Vehicle.findByIdAndDelete(id);
 
