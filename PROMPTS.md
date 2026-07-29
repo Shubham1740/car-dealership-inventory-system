@@ -116,3 +116,11 @@ how does axios render and any keyword alternatives
 
 outcome:
 resolved error about any keyword
+
+## Prompt 16
+
+Prompt:
+cors connection error
+
+outcome:
+resolved the error
