@@ -36,3 +36,11 @@ Provide a clean boilerplate for middleware for jwt authentication
 
 Outcome:
 Created middleware for authentication
+
+## Prompt 6
+
+Prompt:
+suggest the fields for vehicles
+
+Outcome:
+implemented the vehicle model
