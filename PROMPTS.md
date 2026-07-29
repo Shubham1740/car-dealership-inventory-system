@@ -100,3 +100,19 @@ how to connect and test the api
 
 outcome:
 implemented the tests for api connection
+
+## Prompt 14
+
+Prompt:
+how to add routing
+
+Outcome:
+implemented routing
+
+## Prompt 15
+
+Prompt:
+how does axios render and any keyword alternatives
+
+outcome:
+resolved error about any keyword

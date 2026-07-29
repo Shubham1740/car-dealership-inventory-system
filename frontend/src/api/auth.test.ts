@@ -11,7 +11,7 @@ describe('auth API', () => {
 
   it('register posts to /auth/register and returns the response data', async () => {
     const mockResponse = { data: { success: true, data: { user: { email: 'a@b.com' } } } };
-    (apiClient.post as any).mockResolvedValue(mockResponse);
+    vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
 
     const result = await register({ email: 'a@b.com', password: 'secret1' });
 
@@ -21,7 +21,7 @@ describe('auth API', () => {
 
   it('login posts to /auth/login and returns the response data', async () => {
     const mockResponse = { data: { success: true, data: { token: 'jwt-token', user: { email: 'a@b.com' } } } };
-    (apiClient.post as any).mockResolvedValue(mockResponse);
+    vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
 
     const result = await login({ email: 'a@b.com', password: 'secret1' });
 

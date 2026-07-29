@@ -8,70 +8,70 @@ import * as authApi from '../api/auth';
 vi.mock('../api/auth');
 
 const renderLogin = () =>
-  render(
-    <MemoryRouter>
-      <Login />
-    </MemoryRouter>
-  );
+    render(
+        <MemoryRouter>
+            <Login />
+        </MemoryRouter>
+    );
 
 describe('Login page', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
-  });
-
-  it('renders email and password fields with a submit button', () => {
-    renderLogin();
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
-  });
-
-  it('calls login API with entered credentials on submit', async () => {
-    const user = userEvent.setup();
-    (authApi.login as any).mockResolvedValue({
-      success: true,
-      data: { token: 'jwt-token', user: { email: 'a@b.com' } },
+    beforeEach(() => {
+        vi.clearAllMocks();
+        localStorage.clear();
     });
 
-    renderLogin();
-    await user.type(screen.getByLabelText(/email/i), 'a@b.com');
-    await user.type(screen.getByLabelText(/password/i), 'secret1');
-    await user.click(screen.getByRole('button', { name: /log in/i }));
-
-    await waitFor(() => {
-      expect(authApi.login).toHaveBeenCalledWith({ email: 'a@b.com', password: 'secret1' });
-    });
-  });
-
-  it('stores the token in localStorage on successful login', async () => {
-    const user = userEvent.setup();
-    (authApi.login as any).mockResolvedValue({
-      success: true,
-      data: { token: 'jwt-token', user: { email: 'a@b.com' } },
+    it('renders email and password fields with a submit button', () => {
+        renderLogin();
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
     });
 
-    renderLogin();
-    await user.type(screen.getByLabelText(/email/i), 'a@b.com');
-    await user.type(screen.getByLabelText(/password/i), 'secret1');
-    await user.click(screen.getByRole('button', { name: /log in/i }));
+    it('calls login API with entered credentials on submit', async () => {
+        const user = userEvent.setup();
+        vi.mocked(authApi.login).mockResolvedValue({
+            success: true,
+            data: { token: 'jwt-token', user: { email: 'a@b.com' } },
+        });
 
-    await waitFor(() => {
-      expect(localStorage.getItem('token')).toBe('jwt-token');
+        renderLogin();
+        await user.type(screen.getByLabelText(/email/i), 'a@b.com');
+        await user.type(screen.getByLabelText(/password/i), 'secret1');
+        await user.click(screen.getByRole('button', { name: /log in/i }));
+
+        await waitFor(() => {
+            expect(authApi.login).toHaveBeenCalledWith({ email: 'a@b.com', password: 'secret1' });
+        });
     });
-  });
 
-  it('shows an error message on failed login', async () => {
-    const user = userEvent.setup();
-    (authApi.login as any).mockRejectedValue({
-      response: { data: { success: false, message: 'Invalid credentials' } },
+    it('stores the token in localStorage on successful login', async () => {
+        const user = userEvent.setup();
+        vi.mocked(authApi.login).mockResolvedValue({
+            success: true,
+            data: { token: 'jwt-token', user: { email: 'a@b.com' } },
+        });
+
+        renderLogin();
+        await user.type(screen.getByLabelText(/email/i), 'a@b.com');
+        await user.type(screen.getByLabelText(/password/i), 'secret1');
+        await user.click(screen.getByRole('button', { name: /log in/i }));
+
+        await waitFor(() => {
+            expect(localStorage.getItem('token')).toBe('jwt-token');
+        });
     });
 
-    renderLogin();
-    await user.type(screen.getByLabelText(/email/i), 'a@b.com');
-    await user.type(screen.getByLabelText(/password/i), 'wrongpass');
-    await user.click(screen.getByRole('button', { name: /log in/i }));
+    it('shows an error message on failed login', async () => {
+        const user = userEvent.setup();
+        vi.mocked(authApi.login).mockRejectedValue({
+            response: { data: { success: false, message: 'Invalid credentials' } },
+        });
 
-    expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
-  });
+        renderLogin();
+        await user.type(screen.getByLabelText(/email/i), 'a@b.com');
+        await user.type(screen.getByLabelText(/password/i), 'wrongpass');
+        await user.click(screen.getByRole('button', { name: /log in/i }));
+
+        expect(await screen.findByText(/invalid credentials/i)).toBeInTheDocument();
+    });
 });

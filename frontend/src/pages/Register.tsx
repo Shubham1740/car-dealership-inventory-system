@@ -1,23 +1,24 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
-import { getErrorMessage } from '../api/errors';
+import { register } from '../api/auth';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
-const Login = () => {
+const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
+        setSuccess(false);
 
         try {
-            const response = await login({ email, password });
-            localStorage.setItem('token', response.data.token);
-            navigate('/dashboard');
+            await register({ email, password });
+            setSuccess(true);
+            setEmail('');
+            setPassword('');
         } catch (err: unknown) {
             setError(getErrorMessage(err));
         }
@@ -29,10 +30,16 @@ const Login = () => {
                 onSubmit={handleSubmit}
                 className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm"
             >
-                <h1 className="text-2xl font-bold mb-6 text-center">Log In</h1>
+                <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
 
                 {error && (
                     <p className="text-red-600 text-sm mb-4 text-center">{error}</p>
+                )}
+
+                {success && (
+                    <p className="text-green-600 text-sm mb-4 text-center">
+                        Registration successful! You can now log in.
+                    </p>
                 )}
 
                 <div className="mb-4">
@@ -60,6 +67,7 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                         required
+                        minLength={6}
                     />
                 </div>
 
@@ -67,11 +75,11 @@ const Login = () => {
                     type="submit"
                     className="w-full bg-blue-600 text-white rounded py-2 font-medium hover:bg-blue-700"
                 >
-                    Log In
+                    Register
                 </button>
             </form>
         </div>
     );
 };
 
-export default Login;
+export default Register;
