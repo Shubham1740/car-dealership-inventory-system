@@ -65,3 +65,34 @@ export const searchVehicles = async (filters: SearchFilters): Promise<SafeVehicl
   const vehicles = await Vehicle.find(query);
   return vehicles.map(toSafeVehicle);
 };
+
+export class VehicleNotFoundError extends Error {
+  constructor() {
+    super('Vehicle not found');
+    this.name = 'VehicleNotFoundError';
+  }
+}
+
+interface UpdateVehicleInput {
+  make?: string;
+  model?: string;
+  category?: string;
+  price?: number;
+  quantity?: number;
+}
+
+export const updateVehicle = async (
+  id: string,
+  updates: UpdateVehicleInput
+): Promise<SafeVehicle> => {
+  const vehicle = await Vehicle.findByIdAndUpdate(id, updates, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!vehicle) {
+    throw new VehicleNotFoundError();
+  }
+
+  return toSafeVehicle(vehicle);
+};

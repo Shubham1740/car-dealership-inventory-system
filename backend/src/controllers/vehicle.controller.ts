@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
-import { createVehicle, getAllVehicles, searchVehicles } from '../services/vehicle.service';
+import { createVehicle, getAllVehicles, searchVehicles, updateVehicle, VehicleNotFoundError } from '../services/vehicle.service';
 
 export const create = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
@@ -55,6 +55,30 @@ export const search = async (req: AuthenticatedRequest, res: Response): Promise<
     res.status(500).json({
       success: false,
       message: 'Failed to search vehicles',
+    });
+  }
+};
+
+export const update = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const vehicle = await updateVehicle(req.params.id, req.body);
+
+    res.status(200).json({
+      success: true,
+      data: vehicle,
+    });
+  } catch (error) {
+    if (error instanceof VehicleNotFoundError) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
+    res.status(400).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to update vehicle',
     });
   }
 };
