@@ -92,3 +92,11 @@ how to initialize frontend
 
 outcome: 
 intialized frontend in vite+typescript
+
+## Prompt 13
+
+Prompt:
+how to connect and test the api
+
+outcome:
+implemented the tests for api connection
