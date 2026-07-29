@@ -1,6 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model as mongooseModel, Document } from 'mongoose';
 
-export interface IVehicle extends Document {
+export interface IVehicle extends Omit<Document, 'model'> {
   make: string;
   model: string;
   category: string;
@@ -39,4 +39,4 @@ const vehicleSchema = new Schema<IVehicle>(
   { timestamps: true }
 );
 
-export default model<IVehicle>('Vehicle', vehicleSchema);
+export default mongooseModel<IVehicle>('Vehicle', vehicleSchema);
