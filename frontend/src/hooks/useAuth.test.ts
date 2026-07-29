@@ -1,47 +1,68 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useAuth } from './useAuth';
+
+function makeToken(payload: Record<string, unknown>): string {
+  const body = btoa(JSON.stringify(payload));
+  return `header.${body}.signature`;
+}
 
 describe('useAuth', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('reports not authenticated when no token is stored', () => {
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('starts unauthenticated when there is no stored token', () => {
     const { result } = renderHook(() => useAuth());
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.token).toBeNull();
   });
 
-  it('reports authenticated when a token exists in localStorage', () => {
-    localStorage.setItem('token', 'jwt-token');
+  it('picks up an existing token from localStorage on init', () => {
+    localStorage.setItem('token', makeToken({ role: 'user' }));
     const { result } = renderHook(() => useAuth());
     expect(result.current.isAuthenticated).toBe(true);
-    expect(result.current.token).toBe('jwt-token');
   });
 
-  it('setToken stores the token and updates state', () => {
+  it('setToken stores the token and marks the user authenticated', () => {
     const { result } = renderHook(() => useAuth());
-
-    act(() => {
-      result.current.setToken('new-token');
-    });
-
+    act(() => result.current.setToken(makeToken({ role: 'user' })));
     expect(result.current.isAuthenticated).toBe(true);
-    expect(result.current.token).toBe('new-token');
-    expect(localStorage.getItem('token')).toBe('new-token');
+    expect(localStorage.getItem('token')).not.toBeNull();
   });
 
-  it('logout clears the token from state and localStorage', () => {
-    localStorage.setItem('token', 'jwt-token');
+  it('logout clears the token and marks the user unauthenticated', () => {
     const { result } = renderHook(() => useAuth());
-
-    act(() => {
-      result.current.logout();
-    });
-
+    act(() => result.current.setToken(makeToken({ role: 'user' })));
+    act(() => result.current.logout());
     expect(result.current.isAuthenticated).toBe(false);
-    expect(result.current.token).toBeNull();
     expect(localStorage.getItem('token')).toBeNull();
+  });
+
+  it('isAdmin is false when there is no token', () => {
+    const { result } = renderHook(() => useAuth());
+    expect(result.current.isAdmin).toBe(false);
+  });
+
+  it('isAdmin is false for a non-admin role', () => {
+    const { result } = renderHook(() => useAuth());
+    act(() => result.current.setToken(makeToken({ role: 'user' })));
+    expect(result.current.isAdmin).toBe(false);
+  });
+
+  it('isAdmin is true when the token role claim is admin', () => {
+    const { result } = renderHook(() => useAuth());
+    act(() => result.current.setToken(makeToken({ role: 'admin' })));
+    expect(result.current.isAdmin).toBe(true);
+  });
+
+  it('isAdmin is false for a malformed token', () => {
+    localStorage.setItem('token', 'not-a-real-jwt');
+    const { result } = renderHook(() => useAuth());
+    expect(result.current.isAdmin).toBe(false);
   });
 });

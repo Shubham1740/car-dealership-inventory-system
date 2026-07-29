@@ -1,29 +1,34 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --color-bg: 243 244 241;
-  --color-surface: 255 255 255;
-  --color-border: 221 224 227;
-  --color-ink: 20 23 28;
-  --color-muted: 91 97 105;
-  --color-accent: 31 111 84;
-  --color-accent-hover: 22 87 65;
-  --color-danger: 214 69 69;
+@theme {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-bg: #F3F4F1;
+  --color-surface: #FFFFFF;
+  --color-border: #DDE0E3;
+  --color-ink: #14171C;
+  --color-muted: #5B6169;
+  --color-accent: #1F6F54;
+  --color-accent-hover: #165741;
+  --color-danger: #D64545;
 }
 
 .dark {
-  --color-bg: 18 21 26;
-  --color-surface: 27 32 39;
-  --color-border: 42 49 59;
-  --color-ink: 236 238 240;
-  --color-muted: 154 163 173;
-  --color-accent: 52 163 125;
-  --color-accent-hover: 74 184 146;
-  --color-danger: 224 96 96;
+  --color-bg: #12151A;
+  --color-surface: #1B2027;
+  --color-border: #2A313B;
+  --color-ink: #ECEEF0;
+  --color-muted: #9AA3AD;
+  --color-accent: #34A37D;
+  --color-accent-hover: #4AB892;
+  --color-danger: #E06060;
 }
 
 body {
-  @apply bg-bg text-ink font-sans transition-colors duration-200;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s, color 0.2s;
 }
