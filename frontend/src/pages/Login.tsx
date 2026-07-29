@@ -26,19 +26,20 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-bg px-4">
             <form
                 onSubmit={handleSubmit}
-                className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm"
+                className="w-full max-w-sm rounded-lg border border-border bg-surface p-8 shadow-sm"
             >
-                <h1 className="text-2xl font-bold mb-6 text-center">Log In</h1>
+                <h1 className="font-display text-2xl font-semibold text-ink mb-1">Log in</h1>
+                <p className="text-sm text-muted mb-6">Access your inventory dashboard.</p>
 
                 {error && (
-                    <p className="text-red-600 text-sm mb-4 text-center">{error}</p>
+                    <p className="mb-4 rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
                 )}
 
                 <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium mb-1">
+                    <label htmlFor="email" className="block text-sm font-medium text-ink mb-1">
                         Email
                     </label>
                     <input
@@ -46,13 +47,13 @@ const Login = () => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        className="w-full rounded-md border border-border bg-bg px-3 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-accent"
                         required
                     />
                 </div>
 
                 <div className="mb-6">
-                    <label htmlFor="password" className="block text-sm font-medium mb-1">
+                    <label htmlFor="password" className="block text-sm font-medium text-ink mb-1">
                         Password
                     </label>
                     <input
@@ -60,14 +61,14 @@ const Login = () => {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        className="w-full rounded-md border border-border bg-bg px-3 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-accent"
                         required
                     />
                 </div>
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white rounded py-2 font-medium hover:bg-blue-700"
+                    className="w-full rounded-md bg-accent py-2 font-medium text-white hover:bg-accent-hover transition-colors"
                 >
                     Log In
                 </button>

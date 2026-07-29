@@ -124,3 +124,11 @@ cors connection error
 
 outcome:
 resolved the error
+
+## Prompt 17
+
+Prompt:
+suggest some simple ui designs for a car inventory management system
+
+outcome:
+implemented one of the designs
