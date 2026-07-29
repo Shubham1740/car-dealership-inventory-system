@@ -52,3 +52,11 @@ suggest testcses for vehicles endpoint
 
 Outcome:
 implemented testcases for vehicle endpoint
+
+## Prompt 8
+
+Prompt:
+give boilerplate for vehicles endpoint
+
+Outcome:
+implemented the vehicles endpoint
