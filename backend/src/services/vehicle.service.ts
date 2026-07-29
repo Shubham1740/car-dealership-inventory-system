@@ -30,3 +30,8 @@ export const createVehicle = async (input: CreateVehicleInput): Promise<SafeVehi
   const vehicle = await Vehicle.create(input);
   return toSafeVehicle(vehicle);
 };
+
+export const getAllVehicles = async (): Promise<SafeVehicle[]> => {
+  const vehicles = await Vehicle.find();
+  return vehicles.map(toSafeVehicle);
+};
