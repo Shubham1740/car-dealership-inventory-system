@@ -61,10 +61,18 @@ give boilerplate for vehicles endpoint
 Outcome:
 implemented the vehicles endpoint
 
-##Prompt 9
+## Prompt 9
 
 Prompt:
 suggest failing tests for vehicle while searching with id
 
 outcome:
 tests for vehicle focusing on id
+
+## Prompt 10
+
+Prompt:
+suggest some edge cases for the vehicle delete endpoint
+
+outcome:
+implement test cases for delete endpoint
