@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
-import { getErrorMessage } from '../api/errors';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 const Login = () => {
     const [email, setEmail] = useState('');

@@ -64,6 +64,7 @@ describe('Login page', () => {
     it('shows an error message on failed login', async () => {
         const user = userEvent.setup();
         vi.mocked(authApi.login).mockRejectedValue({
+            isAxiosError: true,
             response: { data: { success: false, message: 'Invalid credentials' } },
         });
 
