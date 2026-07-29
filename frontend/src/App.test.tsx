@@ -45,4 +45,16 @@ describe('App routing', () => {
         renderAt('/dashboard');
         expect(screen.getByText(/welcome to your dashboard/i)).toBeInTheDocument();
     });
+
+    it('redirects /login to /dashboard when already authenticated', () => {
+        localStorage.setItem('token', 'jwt-token');
+        renderAt('/login');
+        expect(screen.getByText(/welcome to your dashboard/i)).toBeInTheDocument();
+    });
+
+    it('redirects /register to /dashboard when already authenticated', () => {
+        localStorage.setItem('token', 'jwt-token');
+        renderAt('/register');
+        expect(screen.getByText(/welcome to your dashboard/i)).toBeInTheDocument();
+    });
 });
