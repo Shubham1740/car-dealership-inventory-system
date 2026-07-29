@@ -84,3 +84,11 @@ suggest test cases and fields for vehicle purchase
 
 Outcome:
 implemented test cases and purchase model
+
+## Prompt 12
+
+Prompt:
+how to initialize frontend
+
+outcome: 
+intialized frontend in vite+typescript
