@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { registerUser } from '../services/auth.service';
+import { registerUser, DuplicateEmailError } from '../services/auth.service';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -11,6 +11,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       data: user,
     });
   } catch (error) {
+    if (error instanceof DuplicateEmailError) {
+      res.status(409).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
     res.status(400).json({
       success: false,
       message: error instanceof Error ? error.message : 'Registration failed',

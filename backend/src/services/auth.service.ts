@@ -11,6 +11,13 @@ interface SafeUser {
   role: string;
 }
 
+export class DuplicateEmailError extends Error {
+  constructor() {
+    super('Email is already registered');
+    this.name = 'DuplicateEmailError';
+  }
+}
+
 const toSafeUser = (user: IUser): SafeUser => ({
   id: user._id.toString(),
   email: user.email,
@@ -18,10 +25,17 @@ const toSafeUser = (user: IUser): SafeUser => ({
 });
 
 export const registerUser = async (input: RegisterInput): Promise<SafeUser> => {
-  const user = await User.create({
-    email: input.email,
-    password: input.password,
-  });
+  try {
+    const user = await User.create({
+      email: input.email,
+      password: input.password,
+    });
 
-  return toSafeUser(user);
+    return toSafeUser(user);
+  } catch (error: any) {
+    if (error.code === 11000) {
+      throw new DuplicateEmailError();
+    }
+    throw error;
+  }
 };
