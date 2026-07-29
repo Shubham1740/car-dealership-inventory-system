@@ -7,8 +7,10 @@ import {
   updateVehicle,
   deleteVehicle,
   purchaseVehicle,
+  restockVehicle,
   VehicleNotFoundError,
   OutOfStockError,
+  InvalidQuantityError,
 } from '../services/vehicle.service';
 
 export const create = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
@@ -144,6 +146,38 @@ export const purchase = async (req: AuthenticatedRequest, res: Response): Promis
     res.status(500).json({
       success: false,
       message: 'Failed to purchase vehicle',
+    });
+  }
+};
+
+export const restock = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const vehicle = await restockVehicle(req.params.id, req.body.quantity);
+
+    res.status(200).json({
+      success: true,
+      data: vehicle,
+    });
+  } catch (error) {
+    if (error instanceof VehicleNotFoundError) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
+    if (error instanceof InvalidQuantityError) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to restock vehicle',
     });
   }
 };

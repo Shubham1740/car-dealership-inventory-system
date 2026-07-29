@@ -128,3 +128,27 @@ export const purchaseVehicle = async (id: string): Promise<SafeVehicle> => {
 
   return toSafeVehicle(vehicle);
 };
+
+export class InvalidQuantityError extends Error {
+  constructor() {
+    super('Restock quantity must be a positive number');
+    this.name = 'InvalidQuantityError';
+  }
+}
+
+export const restockVehicle = async (id: string, amount: number): Promise<SafeVehicle> => {
+  if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    throw new InvalidQuantityError();
+  }
+
+  const vehicle = await Vehicle.findById(id);
+
+  if (!vehicle) {
+    throw new VehicleNotFoundError();
+  }
+
+  vehicle.quantity += amount;
+  await vehicle.save();
+
+  return toSafeVehicle(vehicle);
+};
