@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
-import { createVehicle, getAllVehicles, searchVehicles, updateVehicle, VehicleNotFoundError } from '../services/vehicle.service';
+import { createVehicle, getAllVehicles, searchVehicles, updateVehicle, deleteVehicle, VehicleNotFoundError } from '../services/vehicle.service';
 
 export const create = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
@@ -79,6 +79,30 @@ export const update = async (req: AuthenticatedRequest, res: Response): Promise<
     res.status(400).json({
       success: false,
       message: error instanceof Error ? error.message : 'Failed to update vehicle',
+    });
+  }
+};
+
+export const remove = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    await deleteVehicle(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Vehicle deleted',
+    });
+  } catch (error) {
+    if (error instanceof VehicleNotFoundError) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete vehicle',
     });
   }
 };

@@ -96,3 +96,11 @@ export const updateVehicle = async (
 
   return toSafeVehicle(vehicle);
 };
+
+export const deleteVehicle = async (id: string): Promise<void> => {
+  const vehicle = await Vehicle.findByIdAndDelete(id);
+
+  if (!vehicle) {
+    throw new VehicleNotFoundError();
+  }
+};
