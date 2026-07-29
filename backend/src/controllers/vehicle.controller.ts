@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
-import { createVehicle, getAllVehicles } from '../services/vehicle.service';
+import { createVehicle, getAllVehicles, searchVehicles } from '../services/vehicle.service';
 
 export const create = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
@@ -31,6 +31,30 @@ export const list = async (_req: AuthenticatedRequest, res: Response): Promise<v
     res.status(500).json({
       success: false,
       message: 'Failed to fetch vehicles',
+    });
+  }
+};
+
+export const search = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { make, model, category, minPrice, maxPrice } = req.query;
+
+    const vehicles = await searchVehicles({
+      make: make as string | undefined,
+      model: model as string | undefined,
+      category: category as string | undefined,
+      minPrice: minPrice !== undefined ? Number(minPrice) : undefined,
+      maxPrice: maxPrice !== undefined ? Number(maxPrice) : undefined,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: vehicles,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to search vehicles',
     });
   }
 };
